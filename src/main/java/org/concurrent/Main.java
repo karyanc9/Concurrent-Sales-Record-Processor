@@ -93,7 +93,7 @@ public class Main {
      * @throws InterruptedException If any thread is interrupted while waiting
      * @throws ExecutionException   If an error occurs during execution of any thread
      */
-    private static int[] calculateTotalUnitsSold(ExecutorService executor, List<int[]> salesData)
+    public static int[] calculateTotalUnitsSold(ExecutorService executor, List<int[]> salesData)
             throws InterruptedException, ExecutionException {
         int[] totalUnitsSold = new int[6];
         List<Future<int[]>> futuresUnits = new ArrayList<>();
@@ -123,7 +123,7 @@ public class Main {
      * @throws InterruptedException If any thread is interrupted while waiting
      * @throws ExecutionException   If an error occurs during execution of any thread
      */
-    private static double calculateTotalDailyProfit(ExecutorService executor, List<int[]> salesData)
+    public static double calculateTotalDailyProfit(ExecutorService executor, List<int[]> salesData)
             throws InterruptedException, ExecutionException {
         double totalProfit = 0;
         List<Future<Double>> futuresProfits = new ArrayList<>();
@@ -150,7 +150,7 @@ public class Main {
      * @throws InterruptedException If any thread is interrupted while waiting
      * @throws ExecutionException   If an error occurs during execution of any thread
      */
-    private static BranchProfit calculateBranchWithLowestProfit(ExecutorService executor, List<int[]> salesData)
+    public static BranchProfit calculateBranchWithLowestProfit(ExecutorService executor, List<int[]> salesData)
             throws InterruptedException, ExecutionException {
         double minProfit = Double.MAX_VALUE;
         String branchId = "";
@@ -184,6 +184,9 @@ public class Main {
      * @return Array representing total units sold for each product in the specified chunk
      */
     private static int[] calculateUnitsSold(List<int[]> salesData, int threadId) {
+        if (salesData.isEmpty()) {
+            throw new IllegalArgumentException("Sales data is empty");
+        }
         int[] totalUnitsSold = new int[6];
         int chunkSize = (int) Math.ceil(salesData.size() / (double) NUM_THREADS); // Calculate chunk size for each thread
         int start = threadId * chunkSize; // Start index for the current thread
@@ -207,6 +210,9 @@ public class Main {
      * @return Total profits for the specified chunk
      */
     private static double calculateTotalProfits(List<int[]> salesData, int threadId) {
+        if (salesData.isEmpty()) {
+            throw new IllegalArgumentException("Sales data is empty");
+        }
         double totalProfit = 0;
         int chunkSize = (int) Math.ceil(salesData.size() / (double) NUM_THREADS); // Calculate chunk size for each thread
         int start = threadId * chunkSize; // Start index for the current thread
@@ -230,6 +236,9 @@ public class Main {
      * @return BranchProfit object representing branch with the lowest profit in the specified chunk
      */
     private static BranchProfit calculateBranchWithLowestProfitTask(List<int[]> salesData, int threadId) {
+        if (salesData.isEmpty()) {
+            throw new IllegalArgumentException("Sales data is empty");
+        }
         double minProfit = Double.MAX_VALUE;
         String branchId = "";
         int chunkSize = (int) Math.ceil(salesData.size() / (double) NUM_THREADS); // Calculate chunk size for each thread
@@ -249,6 +258,11 @@ public class Main {
             }
         }
         return new BranchProfit(branchId, minProfit);
+    }
+
+    // Method to create an executor service for testing
+    public static ExecutorService createExecutor() {
+        return Executors.newFixedThreadPool(NUM_THREADS);
     }
 
     /**
