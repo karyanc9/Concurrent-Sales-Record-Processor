@@ -13,7 +13,7 @@ import java.util.concurrent.*;
 public class Main {
 
     private static final String FILE_PATH = "sales_records.xlsx"; // Path to the Excel file containing sales data
-    private static final int NUM_THREADS = 6; // Number of threads to use for concurrent processing
+    private static final int NUM_THREADS = 8; // Number of threads to use for concurrent processing
 
     // Profit margins for each product
     private static final double[] PRODUCT_PROFITS = {1.10, 1.50, 2.10, 1.60, 1.80, 3.90};
@@ -25,31 +25,34 @@ public class Main {
         // Creating a thread pool with a fixed number of threads
         ExecutorService executor = Executors.newFixedThreadPool(NUM_THREADS);
 
-        // Step 1: Read sales data from Excel file
+        // Read sales data from Excel file
         List<int[]> salesData = readSalesData(FILE_PATH);
 
-        // Step 2: Calculate total units sold for each product
+        // Calculate total units sold for each product
         startTime = System.currentTimeMillis();
         int[] totalUnitsSold = calculateTotalUnitsSold(executor, salesData);
         endTime = System.currentTimeMillis();
         System.out.println("Total units sold: ");
         printUnitsSold(totalUnitsSold);
-        System.out.println("Time taken for identifying total units sold: " + (endTime - startTime) + "ms");
+        // Uncomment the line below to display time taken for task process
+        // System.out.println("Time taken for identifying total units sold: " + (endTime - startTime) + "ms");
 
-        // Step 3: Calculate total daily profits
+        // Calculate total daily profits
         startTime = System.currentTimeMillis();
         double totalDailyProfit = calculateTotalDailyProfit(executor, salesData);
         endTime = System.currentTimeMillis();
         System.out.println("\nTotal daily profits: " + DECIMAL_FORMAT.format(totalDailyProfit));
-        System.out.println("Time taken for identifying total daily profits: " + (endTime - startTime) + "ms");
+        // Uncomment the line below to display time taken for task process
+        // System.out.println("Time taken for identifying total daily profits: " + (endTime - startTime) + "ms");
 
-        // Step 4: Identify branch with lowest daily profit
+        // Identify branch with lowest daily profit
         startTime = System.currentTimeMillis();
         BranchProfit branchWithLowestProfit = calculateBranchWithLowestProfit(executor, salesData);
         endTime = System.currentTimeMillis();
         System.out.println("\nBranch with lowest profit: " + branchWithLowestProfit.branchId);
         System.out.println("Profit of branch with lowest profit: " + DECIMAL_FORMAT.format(branchWithLowestProfit.profit));
-        System.out.println("Time taken for identifying branch with lowest profit: " + (endTime - startTime) + "ms");
+        // Uncomment the line below to display time taken for task process
+        // System.out.println("Time taken for identifying branch with lowest profit: " + (endTime - startTime) + "ms");
 
         // Shutting down the executor service
         executor.shutdown();
